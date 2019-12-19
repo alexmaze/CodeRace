@@ -1,0 +1,23 @@
+@import "~src/styles/variables.less";
+
+.comp-modal-footer {
+  margin: 16px -16px -16px;
+  padding: 16px;
+  border-top: 1px solid @gray-400;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  &.hide-border {
+    border-top: none;
+  }
+
+  .ant-btn + .ant-btn {
+    margin-left: 16px;
+  }
+}
+
+.comp-modal {
+  .ant-form-item {
+    margin-bottom: 14px;
+  }
+}
