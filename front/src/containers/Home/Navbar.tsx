@@ -6,8 +6,7 @@ import { autobind } from "core-decorators"
 import { Log } from "@/utils"
 import { IGlobalState, useGlobal } from "@/context/global"
 import { UserIndicator } from "@/components/UserIndicator"
-
-import { SigninModal } from "./SigninModal"
+import { SigninModal } from "@/components/SigninModal"
 
 export const Navbar: React.FC = () => {
   const globalState = useGlobal()
