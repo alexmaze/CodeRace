@@ -1,10 +1,13 @@
 import { Controller, Get, Param, ParseIntPipe, Res, Query } from "@nestjs/common"
 import { Response } from "express"
+import { sleep } from "src/utils/sleep"
 
-@Controller("/question")
+@Controller("/api/question")
 export class QuestionController {
   @Get("/")
   async index(@Res() res: Response, @Query("page", new ParseIntPipe()) page, @Query("size", new ParseIntPipe()) size) {
+    await sleep(3)
+
     return res.json({
       page,
       size,
