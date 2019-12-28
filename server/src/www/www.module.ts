@@ -4,11 +4,12 @@ import { MainModule } from "../main/main.module"
 
 import * as cookieParser from "cookie-parser"
 import { ArticleController } from "./article.controller"
+import { QuestionController } from "./question.controller"
 
 @Module({
   imports: [MainModule, MediaModule],
   providers: [],
-  controllers: [ArticleController],
+  controllers: [QuestionController, ArticleController],
 })
 export class WwwModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
