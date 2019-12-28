@@ -39,11 +39,14 @@ export class QuestionController {
 
   @Get("/:id")
   async show(@Res() res: Response, @Param("id", ParseIntPipe) id: number) {
+    await sleep(1)
     return res.json({
       data: {
         id: 1,
         title: "SMS Content Links Recognition",
         description: "Recognize links in sms text content accurately and rapidly.",
+        language: "golang",
+        status: "Racing",
         due_date: "2019-12-31 14:00:00",
         created_at: "2019-12-18 14:00:00",
         updated_at: "2019-12-18 14:00:00",

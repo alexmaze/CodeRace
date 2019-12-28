@@ -1,13 +1,12 @@
 import * as React from "react"
 import { Log } from "@/utils"
-// import { Navbar } from "./Navbar"
 
-import "./style.less"
 import { Loading } from "@/components/Loading"
 import { IPageResponse, IQuestion, QuestionStatus } from "@/types"
 import { QuestionAPI } from "@/apis"
 import { message } from "antd"
 import { Link } from "react-router-dom"
+import "./style.less"
 
 const l = Log("Home")
 
@@ -34,8 +33,6 @@ export const Home: React.FC = () => {
         setLoading(false)
       })
   }, [page])
-
-  console.log(loading, response)
 
   return (
     <div className="page cont-home crt">
