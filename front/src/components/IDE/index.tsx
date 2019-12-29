@@ -139,7 +139,7 @@ export class IDE extends React.Component<IIDEProps, {}> {
   }
 
   async handleSubmit() {
-    this.terminalEl.this.showTerminal = true
+    this.showTerminal = true
     this.submitting = true
     try {
       await this.props.onSubmit()

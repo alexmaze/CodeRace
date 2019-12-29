@@ -1,6 +1,8 @@
 import { Controller, Get, Param, ParseIntPipe, Res, Query, Post } from "@nestjs/common"
 import { Response } from "express"
 import { sleep } from "src/utils/sleep"
+import * as fs from "fs"
+import * as path from "path"
 
 @Controller("/api/question")
 export class QuestionController {
@@ -56,69 +58,23 @@ export class QuestionController {
 
   @Get("/:id/folder")
   async showFolder(@Res() res: Response, @Param("id", new ParseIntPipe()) id: number) {
-    interface IFile {
-      name: string
-      language?: string
-      readonly?: boolean
-      files?: IFile[]
-      content?: string
-      isFolder: boolean
-    }
+    const rootPath = path.join(__dirname, `../../workspace/${id}`)
+    const data = readFileInfoRecursively(rootPath)
+    data.name = "workspace"
 
     return res.json({
-      data: {
-        name: "CODE RACE",
-        isFolder: true,
-        files: [
-          {
-            name: "input.json",
-            language: "json",
-            readonly: true,
-          },
-          {
-            name: "main.go",
-            language: "go",
-            readonly: false,
-          },
-          {
-            name: "output",
-            isFolder: true,
-            files: [
-              {
-                name: "xxx",
-              },
-            ],
-          },
-        ],
-      },
+      data,
     })
   }
 
   @Get("/:id/file")
-  async showFileContent(@Res() res: Response, @Query("path") path: string) {
-    if (path === "/input.json") {
-      return res.json({
-        data: `
-{
-    "name": "alex"
-}
-            `,
-      })
-    } else {
-      return res.json({
-        data: `
-package main
+  async showFileContent(@Res() res: Response, @Param("id", new ParseIntPipe()) id: number, @Query("path") p: string) {
+    const filePath = path.join(__dirname, `../../workspace/${id}${p}`)
 
-import (
-    "fmt"
-)
-
-func main() {
-    fmt.Println("hell")
-}
-            `,
-      })
-    }
+    const buf = fs.readFileSync(filePath)
+    return res.json({
+      data: buf.toString(),
+    })
   }
 
   @Post("/:id/submit")
@@ -127,5 +83,37 @@ func main() {
     return res.json({
       data: "success!",
     })
+  }
+}
+
+interface IFile {
+  name: string
+  language?: string
+  readonly?: boolean
+  files?: IFile[]
+  content?: string
+  isFolder: boolean
+}
+
+function readFileInfoRecursively(path: string): IFile {
+  const pathArr = path.split("/")
+  const name = pathArr[pathArr.length - 1]
+
+  const stat = fs.statSync(path)
+
+  if (stat.isDirectory()) {
+    const subFiles = fs.readdirSync(path)
+
+    return {
+      name,
+      isFolder: true,
+      files: subFiles.map(v => readFileInfoRecursively(path + "/" + v)),
+    }
+  }
+
+  return {
+    name,
+    language: name.substr(name.lastIndexOf(".") + 1),
+    isFolder: false,
   }
 }
