@@ -65,10 +65,9 @@ export class QuestionController {
       isFolder: boolean
     }
 
-    await sleep(1)
     return res.json({
       data: {
-        name: "",
+        name: "CODE RACE",
         isFolder: true,
         files: [
           {
@@ -81,6 +80,15 @@ export class QuestionController {
             language: "go",
             readonly: false,
           },
+          {
+            name: "output",
+            isFolder: true,
+            files: [
+              {
+                name: "xxx",
+              },
+            ],
+          },
         ],
       },
     })
@@ -88,8 +96,6 @@ export class QuestionController {
 
   @Get("/:id/file")
   async showFileContent(@Res() res: Response, @Query("path") path: string) {
-    await sleep(1)
-
     if (path === "/input.json") {
       return res.json({
         data: `

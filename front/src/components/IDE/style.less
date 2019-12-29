@@ -4,4 +4,54 @@
   text-transform: none;
   box-shadow: 0px 0px 10px @hack-color-glow;
   border: 1px solid @hack-color-glow;
+  display: flex;
+  .content {
+    flex-grow: 1;
+    .file-path {
+      color: white;
+      padding: 2px 20px 0;
+      border-bottom: 1px solid @hack-color-glow;
+      font-size: 14px;
+      .ant-icon {
+        margin-right: 10px;
+      }
+    }
+  }
+  .file-tree {
+    font-size: 14px;
+    display: flex;
+    width: 150px;
+    flex-shrink: 0;
+    flex-grow: 0;
+    border-right: 1px solid @hack-color-glow;
+    // padding: 4px;
+    overflow: auto;
+    .ant-tree {
+      color: white;
+      min-width: 100%;
+      li .ant-tree-node-content-wrapper {
+        color: white;
+      }
+
+      &.ant-tree-directory > li span.ant-tree-node-content-wrapper:hover::before,
+      &.ant-tree-directory .ant-tree-child-tree > li span.ant-tree-node-content-wrapper:hover::before {
+        background: green;
+      }
+      &.ant-tree-directory > li.ant-tree-treenode-selected > span.ant-tree-node-content-wrapper::before,
+      &.ant-tree-directory
+        .ant-tree-child-tree
+        > li.ant-tree-treenode-selected
+        > span.ant-tree-node-content-wrapper::before {
+        background: green;
+      }
+
+      .ant-tree-switcher {
+        display: none;
+      }
+    }
+    // & > ul {
+    //   width: 100%;
+    //   background-color: black;
+    // }
+  }
 }

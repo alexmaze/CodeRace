@@ -47,11 +47,16 @@ export class QuestionStore extends Store {
     this.loadingRootFolder = false
   }
 
-  async loadFileContent(path: string): Promise<string> {
+  async loadFileContent(path: string): Promise<IFile> {
     const file = this.findFile(path)
 
     if (file.content) {
-      return Promise.resolve(file.content)
+      return file
+    }
+
+    if (file.isFolder) {
+      file.content = ""
+      return file
     }
 
     try {
@@ -61,7 +66,7 @@ export class QuestionStore extends Store {
       message.error("加载文件内容失败: " + path)
     }
 
-    return file.content
+    return file
   }
 
   async saveTempFileContent(path: string, content: string) {
@@ -74,6 +79,14 @@ export class QuestionStore extends Store {
   }
 
   findFile(path: string): IFile {
+    if (path.charAt(0) === "/") {
+      path = path.substr(1)
+    }
+
+    if (path == "") {
+      return this.rootFolder
+    }
+
     const pathArr = path.split("/")
     let file = this.rootFolder
     for (const p of pathArr) {

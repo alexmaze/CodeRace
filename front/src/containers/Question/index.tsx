@@ -36,8 +36,10 @@ class QuestionImpl extends React.Component<
   }
 
   render() {
-    const { loading } = this.store
-    return <div className="page cont-question crt">{loading ? <Loading /> : this.renderQuestion()}</div>
+    const { loading, loadingRootFolder } = this.store
+    return (
+      <div className="page cont-question crt">{loading || loadingRootFolder ? <Loading /> : this.renderQuestion()}</div>
+    )
   }
 
   renderQuestion() {
