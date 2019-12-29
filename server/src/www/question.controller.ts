@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe, Res, Query } from "@nestjs/common"
+import { Controller, Get, Param, ParseIntPipe, Res, Query, Post } from "@nestjs/common"
 import { Response } from "express"
 import { sleep } from "src/utils/sleep"
 
@@ -38,7 +38,7 @@ export class QuestionController {
   }
 
   @Get("/:id")
-  async show(@Res() res: Response, @Param("id", ParseIntPipe) id: number) {
+  async show(@Res() res: Response, @Param("id", new ParseIntPipe()) id: number) {
     await sleep(1)
     return res.json({
       data: {
@@ -55,7 +55,7 @@ export class QuestionController {
   }
 
   @Get("/:id/folder")
-  async showFolder(@Res() res: Response, @Param("id", ParseIntPipe) id: number) {
+  async showFolder(@Res() res: Response, @Param("id", new ParseIntPipe()) id: number) {
     interface IFile {
       name: string
       language?: string
@@ -119,5 +119,13 @@ func main() {
             `,
       })
     }
+  }
+
+  @Post("/:id/submit")
+  async submit(@Res() res: Response, @Param("id", new ParseIntPipe()) path: string) {
+    await sleep(1)
+    return res.json({
+      data: "success!",
+    })
   }
 }

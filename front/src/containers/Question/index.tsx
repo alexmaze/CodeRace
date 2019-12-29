@@ -43,7 +43,7 @@ class QuestionImpl extends React.Component<
   }
 
   renderQuestion() {
-    const { question, rootFolder, loadFileContent, saveTempFileContent } = this.store
+    const { question, rootFolder, loadFileContent, saveTempFileContent, output, submit } = this.store
     return (
       <>
         <h1 className="title glow">
@@ -61,7 +61,13 @@ class QuestionImpl extends React.Component<
           <b>Description</b>: {question.description}
         </p>
 
-        <IDE root={rootFolder} onRetrieveFileContent={loadFileContent} onFileChange={saveTempFileContent} />
+        <IDE
+          root={rootFolder}
+          onRetrieveFileContent={loadFileContent}
+          onFileChange={saveTempFileContent}
+          output={output}
+          onSubmit={submit}
+        />
       </>
     )
   }

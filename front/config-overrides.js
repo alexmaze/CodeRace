@@ -28,11 +28,7 @@ module.exports = {
     addWebpackAlias({
       "@": path.resolve(__dirname, "src"),
     }),
-    addWebpackPlugin(
-      new MonacoWebpackPlugin({
-        languages: ["json", "go"],
-      })
-    )
+    addWebpackPlugin(new MonacoWebpackPlugin())
   ),
   devServer: configFunction => (proxy, allowedHost) => {
     proxy = process.env.NODE_ENV === "development" ? proxyApi : null

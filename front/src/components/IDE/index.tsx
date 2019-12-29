@@ -4,12 +4,13 @@ import { autobind } from "core-decorators"
 import MonacoEditor from "react-monaco-editor"
 import * as monacoEditor from "monaco-editor/esm/vs/editor/editor.api"
 import { initVimMode } from "monaco-vim"
-import { Tree, Icon } from "antd"
+import { Tree, Icon, Tooltip } from "antd"
 
 import { observable } from "mobx"
 import { observer } from "mobx-react"
 import { Log } from "@/utils"
 import "./style.less"
+import { Loading } from "../Loading"
 
 const l = Log("IDE")
 const { TreeNode, DirectoryTree } = Tree
@@ -25,8 +26,10 @@ export interface IFile {
 
 interface IIDEProps {
   root: IFile
+  output: string[]
   onRetrieveFileContent: (path: string) => Promise<IFile>
   onFileChange: (path: string, content: string) => void
+  onSubmit: () => Promise<void>
 }
 
 @observer
@@ -38,8 +41,20 @@ export class IDE extends React.Component<IIDEProps, {}> {
   })
   vimMode: any
 
+  terminalEl: any
+
   @observable selectedFile: IFile
   @observable selectedPath: string
+  @observable showTerminal = false
+
+  @observable submitting = false
+
+  componentDidMount() {
+    const defaultSelectedFile = this.props.root.files.find(v => v.name === "main.go")
+    if (defaultSelectedFile) {
+      this.selectFile("/main.go")
+    }
+  }
 
   componentWillUnmount() {
     if (this.vimMode) {
@@ -61,6 +76,19 @@ export class IDE extends React.Component<IIDEProps, {}> {
     )
   }
 
+  renderTerminal() {
+    return (
+      <div className="terminal" ref={v => (this.terminalEl = v)}>
+        <code>
+          {this.props.output.map(v => (
+            <div>{v}</div>
+          ))}
+        </code>
+        <div>{this.submitting && <Loading text="submitting..." />}</div>
+      </div>
+    )
+  }
+
   render() {
     const options = {
       selectOnLineNumbers: true,
@@ -75,9 +103,23 @@ export class IDE extends React.Component<IIDEProps, {}> {
         </div>
 
         <div className="content">
-          <div className="file-path">
-            <Icon type="file"></Icon>
-            {this.selectedPath || "-"}
+          <div className="action-bar">
+            <div className="file-path">
+              <Icon
+                className="file-icon"
+                type={this.selectedFile && this.selectedFile.isFolder ? "folder" : "file"}
+              ></Icon>
+              {this.selectedPath || "-"}
+            </div>
+
+            <div className="actions">
+              <Tooltip title="Terminal">
+                <Icon onClick={this.toggleTerminal} type="code" className="action-icon" />
+              </Tooltip>
+              <Tooltip title="Upload & Run">
+                <Icon onClick={this.handleSubmit} className="action-icon" type="caret-right" />
+              </Tooltip>
+            </div>
           </div>
           <MonacoEditor
             width="100%"
@@ -89,10 +131,23 @@ export class IDE extends React.Component<IIDEProps, {}> {
             onChange={this.handleEditorChange}
             editorDidMount={this.handleEditorDidMount}
           />
+          {this.showTerminal && this.renderTerminal()}
           <div ref={v => this.vimStatusElPromiseRes(v)}></div>
         </div>
       </div>
     )
+  }
+
+  async handleSubmit() {
+    this.terminalEl.this.showTerminal = true
+    this.submitting = true
+    try {
+      await this.props.onSubmit()
+    } catch (e) {
+      l.debug(e)
+    }
+
+    this.submitting = false
   }
 
   handleEditorDidMount(editor: monacoEditor.editor.IStandaloneCodeEditor) {
@@ -103,13 +158,29 @@ export class IDE extends React.Component<IIDEProps, {}> {
   }
 
   handleEditorChange(v: string) {
+    if (!this.selectedPath) {
+      return
+    }
     l.debug("editor change", v)
+    this.props.onFileChange(this.selectedPath, v)
+  }
+
+  toggleTerminal() {
+    this.showTerminal = !this.showTerminal
   }
 
   handleTreeSelect(pathes: string[]) {
-    const file = pathes[0].substr(this.props.root.name.length + 1)
-    this.selectedPath = file
-    this.props.onRetrieveFileContent(file).then(f => {
+    let file = pathes[0].substr(this.props.root.name.length + 1)
+    if (file === "") {
+      file = "/"
+    }
+
+    this.selectFile(file)
+  }
+
+  selectFile(path: string) {
+    this.selectedPath = path
+    this.props.onRetrieveFileContent(path).then(f => {
       this.selectedFile = f
       l.debug("tree seelct", f)
     })

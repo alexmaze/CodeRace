@@ -7,13 +7,29 @@
   display: flex;
   .content {
     flex-grow: 1;
-    .file-path {
+    .action-bar {
       color: white;
-      padding: 2px 20px 0;
+      padding: 0 20px;
+      line-height: 32px;
       border-bottom: 1px solid @hack-color-glow;
       font-size: 14px;
-      .ant-icon {
-        margin-right: 10px;
+      display: flex;
+      justify-content: space-between;
+      .file-icon {
+        margin-right: 5px;
+      }
+
+      .actions {
+        .action-icon {
+          font-size: 16px;
+          cursor: pointer;
+          padding: 4px 8px;
+          font-weight: bold;
+          &:hover {
+            color: @hack-color-glow;
+            text-shadow: 0px 0px 10px @hack-color-glow;
+          }
+        }
       }
     }
   }
@@ -53,5 +69,13 @@
     //   width: 100%;
     //   background-color: black;
     // }
+  }
+
+  .terminal {
+    height: 100px;
+    border-top: 1px solid @hack-color-glow;
+    overflow: auto;
+    padding: 0 10px;
+    color: @gray-400;
   }
 }

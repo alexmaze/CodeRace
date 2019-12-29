@@ -17,6 +17,10 @@ export class QuestionStore extends Store {
   @observable loadingRootFolder = true
   @observable rootFolder: IFile
 
+  @observable output: string[] = []
+
+  @observable changedFiles: { [path: string]: string } = {}
+
   constructor(private id: string) {
     super()
   }
@@ -70,12 +74,29 @@ export class QuestionStore extends Store {
   }
 
   async saveTempFileContent(path: string, content: string) {
+    const file = this.findFile(path)
+
+    if (file.isFolder) {
+      return
+    }
+
+    if (file.readonly) {
+      return
+    }
+
     l.debug("保存")
-    l.debug(path, content)
+    this.changedFiles[path] = content
   }
 
   async submit() {
-    l.debug("提交")
+    l.debug("提交", this.changedFiles)
+    try {
+      const res = await QuestionAPI.submit(this.id, this.changedFiles)
+      this.output = [...this.output, res.data]
+      l.debug(this.output)
+    } catch (e) {
+      message.error("执行失败")
+    }
   }
 
   findFile(path: string): IFile {
@@ -83,7 +104,7 @@ export class QuestionStore extends Store {
       path = path.substr(1)
     }
 
-    if (path == "") {
+    if (path === "") {
       return this.rootFolder
     }
 
@@ -91,7 +112,7 @@ export class QuestionStore extends Store {
     let file = this.rootFolder
     for (const p of pathArr) {
       if (file == null || !file.isFolder) {
-        throw "路径错误" + path
+        throw new Error("路径错误: " + path)
       }
 
       file = file.files.find(v => v.name === p)
