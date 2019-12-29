@@ -10,6 +10,7 @@ import { IQuestion } from "@/types"
 import { message } from "antd"
 import { QuestionAPI } from "@/apis"
 import { Loading } from "@/components/Loading"
+import MonacoEditor from "react-monaco-editor"
 
 export const Question: React.FC = () => {
   const { id } = useParams()
@@ -51,6 +52,11 @@ class QuestionImpl extends React.Component<
   }
 
   renderQuestion() {
+    const code = ""
+    const options = {
+      selectOnLineNumbers: true,
+    }
+
     return (
       <>
         <h1 className="title glow">
@@ -67,7 +73,28 @@ class QuestionImpl extends React.Component<
         <p className="glow">
           <b>Description</b>: {this.question.description}
         </p>
+
+        <div className="editor-wrapper">
+          <MonacoEditor
+            width="100%"
+            height="600"
+            language={this.question.language}
+            theme="hc-black"
+            value={code}
+            options={options}
+            onChange={this.handleEditorChange}
+            editorDidMount={this.handleEditorDidMount}
+          />
+        </div>
       </>
     )
+  }
+
+  handleEditorDidMount() {
+    console.log("editor did mount")
+  }
+
+  handleEditorChange(v: any) {
+    console.log(v)
   }
 }

@@ -5,14 +5,14 @@ export enum QuestionStatus {
 }
 
 export enum CodeLanguage {
-  Golang = "golang",
+  Golang = "go",
 }
 
 export interface IQuestion {
   id: number
   title: string
   description: string
-  language: string
+  language: CodeLanguage
   status: QuestionStatus
   due_date: string
   created_at: string

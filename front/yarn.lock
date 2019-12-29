@@ -1516,6 +1516,14 @@
     "@types/prop-types" "*"
     csstype "^2.2.0"
 
+"@types/react@^15.x || ^16.x":
+  version "16.9.17"
+  resolved "https://registry.npm.taobao.org/@types/react/download/@types/react-16.9.17.tgz?cache=0&sync_timestamp=1576825860124&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Freact%2Fdownload%2F%40types%2Freact-16.9.17.tgz#58f0cc0e9ec2425d1441dd7b623421a867aa253e"
+  integrity sha1-WPDMDp7CQl0UQd17YjQhqGeqJT4=
+  dependencies:
+    "@types/prop-types" "*"
+    csstype "^2.2.0"
+
 "@types/stack-utils@^1.0.1":
   version "1.0.1"
   resolved "https://registry.npm.taobao.org/@types/stack-utils/download/@types/stack-utils-1.0.1.tgz#0a851d3bd96498fa25c33ab7278ed3bd65f06c3e"
@@ -7017,6 +7025,18 @@ moment@2.x, moment@^2.24.0:
   resolved "https://registry.npm.taobao.org/moment/download/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha1-DQVdU/UFKqZTyfbraLtdEr9cK1s=
 
+monaco-editor-webpack-plugin@^1.8.1:
+  version "1.8.1"
+  resolved "https://registry.npm.taobao.org/monaco-editor-webpack-plugin/download/monaco-editor-webpack-plugin-1.8.1.tgz#5701bfce16c14c51503a607726d97fd92784af26"
+  integrity sha1-VwG/zhbBTFFQOmB3Jtl/2SeEryY=
+  dependencies:
+    loader-utils "^1.2.3"
+
+monaco-editor@^0.19.0:
+  version "0.19.0"
+  resolved "https://registry.npm.taobao.org/monaco-editor/download/monaco-editor-0.19.0.tgz#c6e774210f3b292ff739e96f45a1cc78bf5ac2e7"
+  integrity sha1-xud0IQ87KS/3OelvRaHMeL9awuc=
+
 move-concurrently@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npm.taobao.org/move-concurrently/download/move-concurrently-1.0.1.tgz#be2c005fda32e0b29af1f05d7c4b33214c701f92"
@@ -8603,7 +8623,7 @@ prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.3"
 
-prop-types@15.x, prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.5.9, prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@15.x, prop-types@^15.0.0, prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.5.9, prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.npm.taobao.org/prop-types/download/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha1-UsQedbjIfnK52TYOAga5ncv/psU=
@@ -9272,6 +9292,14 @@ react-lifecycles-compat@^3.0.2, react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.npm.taobao.org/react-lifecycles-compat/download/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha1-TxonOv38jzSIqMUWv9p4+HI1I2I=
+
+react-monaco-editor@^0.32.1:
+  version "0.32.1"
+  resolved "https://registry.npm.taobao.org/react-monaco-editor/download/react-monaco-editor-0.32.1.tgz#fa45d62fd19d5942cba98bd7c59336d21f8750e0"
+  integrity sha1-+kXWL9GdWULLqYvXxZM20h+HUOA=
+  dependencies:
+    "@types/react" "^15.x || ^16.x"
+    prop-types "^15.0.0"
 
 react-router-dom@^5.1.2:
   version "5.1.2"
