@@ -153,7 +153,8 @@ export class IDE extends React.Component<IIDEProps, {}> {
   handleEditorDidMount(editor: monacoEditor.editor.IStandaloneCodeEditor) {
     this.vimStatusElPromise.then(el => {
       l.debug("editor did mount")
-      initVimMode(editor, el)
+      this.vimMode = initVimMode(editor, el)
+      // debugger
     })
   }
 
@@ -182,6 +183,7 @@ export class IDE extends React.Component<IIDEProps, {}> {
     this.selectedPath = path
     this.props.onRetrieveFileContent(path).then(f => {
       this.selectedFile = f
+      this.vimMode.setSelection(0, 1)
       l.debug("tree seelct", f)
     })
   }
