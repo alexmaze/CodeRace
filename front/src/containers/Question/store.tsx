@@ -34,6 +34,19 @@ export class QuestionStore extends Store {
     this.loading = false
   }
 
+  async loadFolder() {
+    this.loadingRootFolder = true
+
+    try {
+      const res = await QuestionAPI.showFolder(this.id)
+      this.rootFolder = res.data
+    } catch (e) {
+      message.error("加载问题目录数据失败")
+    }
+
+    this.loadingRootFolder = false
+  }
+
   async loadFileContent(path: string): Promise<string> {
     const file = this.findFile(path)
 
@@ -41,12 +54,23 @@ export class QuestionStore extends Store {
       return Promise.resolve(file.content)
     }
 
-    // TODO
-    return null
+    try {
+      const res = await QuestionAPI.showFileContent(this.id, path)
+      file.content = res.data
+    } catch (e) {
+      message.error("加载文件内容失败: " + path)
+    }
+
+    return file.content
   }
 
   async saveTempFileContent(path: string, content: string) {
-    // TODO
+    l.debug("保存")
+    l.debug(path, content)
+  }
+
+  async submit() {
+    l.debug("提交")
   }
 
   findFile(path: string): IFile {

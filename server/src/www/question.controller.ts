@@ -53,4 +53,65 @@ export class QuestionController {
       },
     })
   }
+
+  @Get("/:id/folder")
+  async showFolder(@Res() res: Response, @Param("id", ParseIntPipe) id: number) {
+    interface IFile {
+      name: string
+      language?: string
+      readonly?: boolean
+      files?: IFile[]
+      content?: string
+      isFolder: boolean
+    }
+
+    await sleep(1)
+    return res.json({
+      data: {
+        name: "",
+        isFolder: true,
+        files: [
+          {
+            name: "input.json",
+            language: "json",
+            readonly: true,
+          },
+          {
+            name: "main.go",
+            language: "go",
+            readonly: false,
+          },
+        ],
+      },
+    })
+  }
+
+  @Get("/:id/file")
+  async showFileContent(@Res() res: Response, @Query("path") path: string) {
+    await sleep(1)
+
+    if (path === "/input.json") {
+      return res.json({
+        data: `
+{
+    "name": "alex"
+}
+            `,
+      })
+    } else {
+      return res.json({
+        data: `
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    fmt.Println("hell")
+}
+            `,
+      })
+    }
+  }
 }

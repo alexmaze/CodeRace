@@ -28,6 +28,7 @@ class QuestionImpl extends React.Component<
 
   componentDidMount() {
     this.store.load()
+    this.store.loadFolder()
   }
 
   componentWillUnmount() {
