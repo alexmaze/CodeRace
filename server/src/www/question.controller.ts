@@ -1,8 +1,12 @@
-import { Controller, Get, Param, ParseIntPipe, Res, Query, Post } from "@nestjs/common"
+import { Controller, Get, Param, ParseIntPipe, Res, Query, Post, Body } from "@nestjs/common"
 import { Response } from "express"
 import { sleep } from "src/utils/sleep"
 import * as fs from "fs"
 import * as path from "path"
+import * as process from "child_process"
+import { v1 as uuid } from "uuid"
+import { ncp } from "ncp"
+import * as rimraf from "rimraf"
 
 @Controller("/api/question")
 export class QuestionController {
@@ -78,10 +82,36 @@ export class QuestionController {
   }
 
   @Post("/:id/submit")
-  async submit(@Res() res: Response, @Param("id", new ParseIntPipe()) path: string) {
-    await sleep(1)
+  async submit(@Res() res: Response, @Param("id", new ParseIntPipe()) id: number, @Body() changedFiles) {
+    const timeStr = new Date()
+      .toISOString()
+      .replace(/\D/g, "")
+      .substr(0, 14)
+    // 1. 准备目录
+    const commonFilesPath = path.join(__dirname, `../../workspace/common`)
+    const rootPath = path.join(__dirname, `../../workspace/${id}`)
+    const workPath = path.join(__dirname, `../../tmp/${id}_${timeStr}_${uuid()}`)
+
+    await cp(rootPath, workPath)
+    await cp(commonFilesPath, workPath)
+
+    // 2. 写入改动
+    Object.keys(changedFiles).forEach(file => {
+      fs.writeFileSync(path.join(workPath, file), changedFiles[file])
+    })
+
+    // 3. 执行
+    process.execSync(`cd ${workPath} && ${workPath}/docker.sh`)
+
+    const buildLog = fs.readFileSync(path.join(workPath, "log/build.log")).toString()
+    const runLog = fs.readFileSync(path.join(workPath, "log/run.log")).toString()
+    const timeLog = fs.readFileSync(path.join(workPath, "log/time.log")).toString()
+
+    // 4. 清理
+    rimraf.sync(workPath)
+
     return res.json({
-      data: "success!",
+      data: [buildLog, runLog, timeLog],
     })
   }
 }
@@ -116,4 +146,16 @@ function readFileInfoRecursively(path: string): IFile {
     language: name.substr(name.lastIndexOf(".") + 1),
     isFolder: false,
   }
+}
+
+function cp(src: string, dest: string) {
+  return new Promise((res, rej) => {
+    ncp(src, dest, err => {
+      if (err != null) {
+        rej(err)
+      } else {
+        res()
+      }
+    })
+  })
 }

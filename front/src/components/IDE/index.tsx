@@ -79,11 +79,9 @@ export class IDE extends React.Component<IIDEProps, {}> {
   renderTerminal() {
     return (
       <div className="terminal" ref={v => (this.terminalEl = v)}>
-        <code>
-          {this.props.output.map(v => (
-            <div>{v}</div>
-          ))}
-        </code>
+        <pre>
+          <code>{this.props.output.join("\n")}</code>
+        </pre>
         <div>{this.submitting && <Loading text="submitting..." />}</div>
       </div>
     )

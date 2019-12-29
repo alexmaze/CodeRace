@@ -26,14 +26,19 @@
     "@nestjs/passport": "^6.1.1",
     "@nestjs/platform-express": "^6.10.12",
     "@nestjs/typeorm": "^6.2.0",
+    "@types/ncp": "^2.0.3",
+    "@types/rimraf": "^2.0.3",
+    "@types/uuid": "^3.4.6",
     "cookie-parser": "^1.4.4",
     "mysql": "^2.17.1",
+    "ncp": "^2.0.0",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",
     "rxjs": "^6.5.3",
-    "typeorm": "^0.2.21"
+    "typeorm": "^0.2.21",
+    "uuid": "^3.3.3"
   },
   "devDependencies": {
     "@nestjs/cli": "^6.9.0",
