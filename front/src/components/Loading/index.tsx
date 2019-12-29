@@ -48,7 +48,7 @@ export const Loading: React.FC<{ text?: string }> = ({ text }) => {
   useEffect(() => {
     const h = setTimeout(() => {
       setCount((count + 1) % letters.length)
-    }, 1000)
+    }, 400)
 
     return () => clearTimeout(h)
   }, [count, letters])

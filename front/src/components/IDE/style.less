@@ -72,10 +72,16 @@
   }
 
   .terminal {
-    height: 100px;
+    min-height: 100px;
     border-top: 1px solid @hack-color-glow;
     overflow: auto;
     padding: 0 10px;
     color: @gray-400;
+    .time-table {
+      min-width: 500px;
+      th {
+        border-bottom: 1px dashed;
+      }
+    }
   }
 }

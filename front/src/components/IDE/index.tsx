@@ -11,6 +11,7 @@ import { observer } from "mobx-react"
 import { Log } from "@/utils"
 import "./style.less"
 import { Loading } from "../Loading"
+import { IQuestionExecLogs } from "@/apis"
 
 const l = Log("IDE")
 const { TreeNode, DirectoryTree } = Tree
@@ -26,7 +27,7 @@ export interface IFile {
 
 interface IIDEProps {
   root: IFile
-  output: string[]
+  output: IQuestionExecLogs
   onRetrieveFileContent: (path: string) => Promise<IFile>
   onFileChange: (path: string, content: string) => void
   onSubmit: () => Promise<void>
@@ -45,7 +46,7 @@ export class IDE extends React.Component<IIDEProps, {}> {
 
   @observable selectedFile: IFile
   @observable selectedPath: string
-  @observable showTerminal = false
+  @observable showTerminal = true
 
   @observable submitting = false
 
@@ -80,10 +81,58 @@ export class IDE extends React.Component<IIDEProps, {}> {
     return (
       <div className="terminal" ref={v => (this.terminalEl = v)}>
         <pre>
-          <code>{this.props.output.join("\n")}</code>
+          <code>
+            {this.submitting && <Loading text="RUNNING..." />}
+            {!this.submitting && !this.props.output && <span>No Result</span>}
+            {!this.submitting && this.props.output && this.renderOutput()}
+          </code>
         </pre>
-        <div>{this.submitting && <Loading text="submitting..." />}</div>
       </div>
+    )
+  }
+
+  renderOutput() {
+    const { output } = this.props
+    const { build, run, time } = output
+
+    if (!!build) {
+      return `BUILD FAILD:\n${build}`
+    }
+
+    const [[buildReal, buildUser, buildSys], [runReal, runUser, runSys]] = time
+      .split("\n")
+      .filter(v => !!v)
+      .map(v => v.match(/real (.+) user (.+) sys (.+)/).slice(1))
+
+    return (
+      <>
+        {run}
+        <br />
+        <table className="time-table">
+          <thead>
+            <tr>
+              <th>/</th>
+              <th>real</th>
+              <th>user</th>
+              <th>system</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>build</td>
+              <td>{buildReal}</td>
+              <td>{buildUser}</td>
+              <td>{buildSys}</td>
+            </tr>
+            <tr>
+              <td>exec</td>
+              <td>{runReal}</td>
+              <td>{runUser}</td>
+              <td>{runSys}</td>
+            </tr>
+          </tbody>
+        </table>
+      </>
     )
   }
 
@@ -95,7 +144,13 @@ export class IDE extends React.Component<IIDEProps, {}> {
     return (
       <div className="comp-ide">
         <div className="file-tree">
-          <DirectoryTree multiple defaultExpandAll onSelect={this.handleTreeSelect} onExpand={this.handleTreeExpand}>
+          <DirectoryTree
+            multiple
+            defaultExpandAll
+            selectedKeys={["/" + this.props.root.name + this.selectedPath]}
+            onSelect={this.handleTreeSelect}
+            onExpand={this.handleTreeExpand}
+          >
             {this.renderFile("", this.props.root)}
           </DirectoryTree>
         </div>

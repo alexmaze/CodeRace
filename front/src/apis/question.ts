@@ -28,7 +28,13 @@ export const QuestionAPI = {
   },
 
   // 提交执行，并返回结果
-  submit(id: string, files: { [path: string]: string }): Promise<IResponse<string>> {
+  submit(id: string, files: { [path: string]: string }): Promise<IResponse<IQuestionExecLogs>> {
     return axios.post(`/api/question/${id}/submit`, files).then(res => res.data)
   },
+}
+
+export interface IQuestionExecLogs {
+  build: string
+  run: string
+  time: string
 }

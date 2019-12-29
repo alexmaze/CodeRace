@@ -111,7 +111,11 @@ export class QuestionController {
     rimraf.sync(workPath)
 
     return res.json({
-      data: [buildLog, runLog, timeLog],
+      data: {
+        build: buildLog,
+        run: runLog,
+        time: timeLog,
+      },
     })
   }
 }

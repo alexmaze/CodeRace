@@ -1,6 +1,6 @@
 import { Store } from "@/stores/core/store"
 import { autobind } from "core-decorators"
-import { QuestionAPI } from "@/apis"
+import { QuestionAPI, IQuestionExecLogs } from "@/apis"
 import { message } from "antd"
 import { observable } from "mobx"
 import { IQuestion } from "@/types"
@@ -17,7 +17,7 @@ export class QuestionStore extends Store {
   @observable loadingRootFolder = true
   @observable rootFolder: IFile
 
-  @observable output: string[] = []
+  @observable output: IQuestionExecLogs
 
   @observable changedFiles: { [path: string]: string } = {}
 
@@ -92,7 +92,7 @@ export class QuestionStore extends Store {
     l.debug("提交", this.changedFiles)
     try {
       const res = await QuestionAPI.submit(this.id, this.changedFiles)
-      this.output = [...this.output, res.data]
+      this.output = res.data
       l.debug(this.output)
     } catch (e) {
       message.error("执行失败")
