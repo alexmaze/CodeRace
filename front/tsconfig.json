@@ -23,12 +23,14 @@
     "emitDecoratorMetadata": true,
     "downlevelIteration": true,
     "typeRoots": [
-      "./node_modules/@types/"
+      "./node_modules/@types/",
+      "./types/"
     ],
     "baseUrl": "."
   },
   "include": [
-    "src"
+    "src",
+    "types"
   ],
   "extends": "./tsconfig.paths.json"
 }

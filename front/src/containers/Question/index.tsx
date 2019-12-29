@@ -11,6 +11,8 @@ import { message } from "antd"
 import { QuestionAPI } from "@/apis"
 import { Loading } from "@/components/Loading"
 import MonacoEditor from "react-monaco-editor"
+import * as monacoEditor from "monaco-editor/esm/vs/editor/editor.api"
+import { initVimMode } from "monaco-vim"
 
 export const Question: React.FC = () => {
   const { id } = useParams()
@@ -27,11 +29,23 @@ class QuestionImpl extends React.Component<
   },
   {}
 > {
+  vimStatusElPromiseRes: (el: any) => void
+  vimStatusElPromise = new Promise(res => {
+    this.vimStatusElPromiseRes = res
+  })
+  vimMode: any
+
   @observable loading = true
   @observable question: IQuestion
 
   componentDidMount() {
     this.load()
+  }
+
+  componentWillUnmount() {
+    if (this.vimMode) {
+      this.vimMode.dispose()
+    }
   }
 
   async load() {
@@ -85,13 +99,17 @@ class QuestionImpl extends React.Component<
             onChange={this.handleEditorChange}
             editorDidMount={this.handleEditorDidMount}
           />
+          <div ref={v => this.vimStatusElPromiseRes(v)}></div>
         </div>
       </>
     )
   }
 
-  handleEditorDidMount() {
-    console.log("editor did mount")
+  handleEditorDidMount(editor: monacoEditor.editor.IStandaloneCodeEditor) {
+    this.vimStatusElPromise.then(el => {
+      console.log("editor did mount", el)
+      initVimMode(editor, el)
+    })
   }
 
   handleEditorChange(v: any) {
