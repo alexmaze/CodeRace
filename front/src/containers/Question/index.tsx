@@ -5,14 +5,9 @@ import "./style.less"
 import { IGlobalState, useGlobal } from "@/context/global"
 import { autobind } from "core-decorators"
 import { observer } from "mobx-react"
-import { observable } from "mobx"
-import { IQuestion } from "@/types"
-import { message } from "antd"
-import { QuestionAPI } from "@/apis"
 import { Loading } from "@/components/Loading"
-import MonacoEditor from "react-monaco-editor"
-import * as monacoEditor from "monaco-editor/esm/vs/editor/editor.api"
-import { initVimMode } from "monaco-vim"
+import { IDE } from "@/components/IDE"
+import { QuestionStore } from "./store"
 
 export const Question: React.FC = () => {
   const { id } = useParams()
@@ -29,90 +24,42 @@ class QuestionImpl extends React.Component<
   },
   {}
 > {
-  vimStatusElPromiseRes: (el: any) => void
-  vimStatusElPromise = new Promise(res => {
-    this.vimStatusElPromiseRes = res
-  })
-  vimMode: any
-
-  @observable loading = true
-  @observable question: IQuestion
+  store = new QuestionStore(this.props.id)
 
   componentDidMount() {
-    this.load()
+    this.store.load()
   }
 
   componentWillUnmount() {
-    if (this.vimMode) {
-      this.vimMode.dispose()
-    }
-  }
-
-  async load() {
-    this.loading = true
-
-    try {
-      const res = await QuestionAPI.show(this.props.id)
-      this.question = res.data
-    } catch (e) {
-      message.error("加载问题失败")
-    }
-
-    this.loading = false
+    this.store.dispose()
   }
 
   render() {
-    return <div className="page cont-question crt">{this.loading ? <Loading /> : this.renderQuestion()}</div>
+    const { loading } = this.store
+    return <div className="page cont-question crt">{loading ? <Loading /> : this.renderQuestion()}</div>
   }
 
   renderQuestion() {
-    const code = ""
-    const options = {
-      selectOnLineNumbers: true,
-    }
-
+    const { question, rootFolder, loadFileContent, saveTempFileContent } = this.store
     return (
       <>
         <h1 className="title glow">
-          #{this.props.id} [{this.question.status}] {this.question.title}
+          #{this.props.id} [{question.status}] {question.title}
         </h1>
         <p className="glow">
           <span style={{ marginRight: 60 }}>
-            <b>Language</b>: {this.question.language}
+            <b>Language</b>: {question.language}
           </span>
           <span>
-            <b>Due Date</b>: {new Date(this.question.due_date).toLocaleDateString()}
+            <b>Due Date</b>: {new Date(question.due_date).toLocaleDateString()}
           </span>
         </p>
-        <p className="glow">
-          <b>Description</b>: {this.question.description}
+        <p className="glow" style={{ marginBottom: 20 }}>
+          <b>Description</b>: {question.description}
         </p>
 
-        <div className="editor-wrapper">
-          <MonacoEditor
-            width="100%"
-            height="600"
-            language={this.question.language}
-            theme="hc-black"
-            value={code}
-            options={options}
-            onChange={this.handleEditorChange}
-            editorDidMount={this.handleEditorDidMount}
-          />
-          <div ref={v => this.vimStatusElPromiseRes(v)}></div>
-        </div>
+        <IDE root={rootFolder} onRetrieveFileContent={loadFileContent} onFileChange={saveTempFileContent} />
       </>
     )
-  }
-
-  handleEditorDidMount(editor: monacoEditor.editor.IStandaloneCodeEditor) {
-    this.vimStatusElPromise.then(el => {
-      console.log("editor did mount", el)
-      initVimMode(editor, el)
-    })
-  }
-
-  handleEditorChange(v: any) {
-    console.log(v)
   }
 }

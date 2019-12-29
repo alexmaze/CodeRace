@@ -51,7 +51,7 @@ export const Loading: React.FC<{ text?: string }> = ({ text }) => {
     }, 1000)
 
     return () => clearTimeout(h)
-  }, [count])
+  }, [count, letters])
 
   return (
     <span className="comp-loading">
