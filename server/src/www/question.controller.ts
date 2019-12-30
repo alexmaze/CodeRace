@@ -90,7 +90,10 @@ export class QuestionController {
     // 1. 准备目录
     const commonFilesPath = path.join(__dirname, `../../workspace/common`)
     const rootPath = path.join(__dirname, `../../workspace/${id}`)
-    const workPath = path.join(__dirname, `../../tmp/${id}_${timeStr}_${uuid()}`)
+
+    const homedir = require("os").homedir()
+
+    const workPath = path.join(homedir, `coderace/${id}_${timeStr}_${uuid()}`)
 
     await cp(rootPath, workPath)
     await cp(commonFilesPath, workPath)
