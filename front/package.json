@@ -21,7 +21,7 @@
     "core-decorators": "^0.20.0",
     "flat": "^5.0.0",
     "less": "^3.10.3",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "mobx": "^5.15.0",
     "mobx-react": "^6.1.4",
     "monaco-editor": "0.18.1",
